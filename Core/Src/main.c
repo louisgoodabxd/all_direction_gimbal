@@ -54,6 +54,10 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
+/* IMU 数据（前置声明，供中断回调使用） */
+fp32 gyro[3], accel[3], temp;
+fp32 mag[3];
+
 /* IST8310 数据就绪中断回调 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -73,10 +77,6 @@ const RC_ctrl_t *RC_Ctl;
 ahrs_t       ahrs;
 chassis_t    chassis;
 gimbal_t     gimbal;
-
-/* IMU 临时数据 */
-fp32 gyro[3], accel[3], temp;
-fp32 mag[3];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
