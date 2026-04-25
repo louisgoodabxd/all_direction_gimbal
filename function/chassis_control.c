@@ -78,3 +78,27 @@ void Chassis_control(chassis_t *chassis, const RC_ctrl_t *RC_Ctl, fp32 yaw_rad)
                     (int16_t)motor3_pid.out,
                     (int16_t)motor4_pid.out);
 }
+
+/* ---------- 供 pid_tuner 访问的接口 ---------- */
+
+pid_type_def *Chassis_get_motor_pid(uint8_t index)
+{
+    switch (index) {
+        case 0: return &motor1_pid;
+        case 1: return &motor2_pid;
+        case 2: return &motor3_pid;
+        case 3: return &motor4_pid;
+        default: return &motor1_pid;
+    }
+}
+
+const motor_measure_t *Chassis_get_motor_data(uint8_t index)
+{
+    switch (index) {
+        case 0: return motor1_data;
+        case 1: return motor2_data;
+        case 2: return motor3_data;
+        case 3: return motor4_data;
+        default: return motor1_data;
+    }
+}

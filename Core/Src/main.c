@@ -39,6 +39,7 @@
 #include "../../function/ahrs.h"
 #include "../../function/chassis_control.h"
 #include "../../function/gimbal_control.h"
+#include "../../function/pid_tuner.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -77,6 +78,7 @@ const RC_ctrl_t *RC_Ctl;
 ahrs_t       ahrs;
 chassis_t    chassis;
 gimbal_t     gimbal;
+pid_tuner_t  tuner;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -138,6 +140,7 @@ int main(void)
   AHRS_init(&ahrs);
   Chassis_init(&chassis);
   Gimbal_init(&gimbal);
+  PID_Tuner_init(&tuner);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -151,8 +154,32 @@ int main(void)
     BMI088_read(gyro, accel, &temp);
     AHRS_update(&ahrs, gyro, accel, mag);
 
-    /* 2. 底盘控制 */
-    Chassis_control(&chassis, RC_Ctl, ahrs.angle[0]);
+    /* 2. PID 调参器（拨杆控制：上=阶跃测试，下=继电测试，中=正常运行） */
+    {
+        tuner_state_e ts = PID_Tuner_update(&tuner, RC_Ctl,
+                                             Chassis_get_motor_data(STEP_MOTOR_INDEX),
+                                             Chassis_get_motor_pid(STEP_MOTOR_INDEX));
+
+        if (ts == TUNER_STEP_RUNNING || ts == TUNER_RELAY_RUNNING)
+        {
+            /* 调参模式：单独发送测试电机的 CAN 指令，其他电机不动 */
+            int16_t out = (int16_t)Chassis_get_motor_pid(STEP_MOTOR_INDEX)->out;
+            int16_t zeros[4] = {0, 0, 0, 0};
+            zeros[STEP_MOTOR_INDEX] = out;
+            CAN_cmd_chassis(zeros[0], zeros[1], zeros[2], zeros[3]);
+        }
+        else
+        {
+            /* 正常模式 */
+            Chassis_control(&chassis, RC_Ctl, ahrs.angle[0]);
+        }
+
+        /* 测试完成时自动发送数据 */
+        if (ts == TUNER_STEP_DONE || ts == TUNER_RELAY_DONE)
+        {
+            PID_Tuner_send_data(&tuner);
+        }
+    }
 
     /* 3. 云台 Yaw 控制 */
     Gimbal_control(&gimbal, RC_Ctl, ahrs.angle[0]);

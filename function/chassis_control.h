@@ -38,4 +38,16 @@ void Chassis_init(chassis_t *chassis);
  */
 void Chassis_control(chassis_t *chassis, const RC_ctrl_t *RC_Ctl, fp32 yaw_rad);
 
+/**
+ * @brief 获取底盘电机 PID 实例（供 pid_tuner 使用）
+ * @param index: 电机编号 0~3
+ */
+pid_type_def *Chassis_get_motor_pid(uint8_t index);
+
+/**
+ * @brief 获取底盘电机数据指针（供 pid_tuner 使用）
+ * @param index: 电机编号 0~3
+ */
+const motor_measure_t *Chassis_get_motor_data(uint8_t index);
+
 #endif
