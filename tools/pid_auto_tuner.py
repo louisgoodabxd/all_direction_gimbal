@@ -398,26 +398,28 @@ def main():
         return
 
     # ===== 根据模式处理 =====
-    if mode == 'STEP':
+    if mode == 'STEP' or mode == 'LOADED':
         # 阶跃响应辨识
-        print("\n" + "="*60)
-        print("  阶跃响应分析")
-        print("="*60)
+        label = "空载阶跃" if mode == 'STEP' else "带载阶跃"
+        print(f"\n{'='*60}")
+        print(f"  {label}响应分析")
+        print(f"{'='*60}")
 
         K, tau, theta, y0, popt = identify_step_response(time_ms, speed)
 
         if K is not None:
             results = recommend_params(K, tau, theta)
-            plot_step_response(time_ms, speed, popt)
+            plot_step_response(time_ms, speed, popt, title=f"{label} Response")
 
             # 保存推荐参数到文件
-            with open('pid_params_recommended.txt', 'w') as f:
-                f.write("# PID 参数推荐 (基于阶跃响应 IMC 整定)\n")
+            fname = f'pid_params_{mode.lower()}.txt'
+            with open(fname, 'w') as f:
+                f.write(f"# PID 参数推荐 (基于{label}响应 IMC 整定)\n")
                 f.write(f"# 模型: K={K:.4f}, tau={tau:.4f}s, theta={theta:.4f}s\n\n")
                 for name, kp, ki, kd in results:
                     f.write(f"# {name}\n")
                     f.write(f"fp32 pid_param[3] = {{{kp:.4f}, {ki:.4f}, {kd:.6f}}};\n\n")
-            print("[输出] 已保存 pid_params_recommended.txt")
+            print(f"[输出] 已保存 {fname}")
 
     elif mode == 'RELAY':
         # 继电测试分析

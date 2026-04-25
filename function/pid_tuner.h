@@ -10,11 +10,15 @@
  *  PID 自动调参器 — STM32 端
  *
  *  工作模式：
- *    MODE_IDLE        → 空闲，电机不受控
- *    MODE_STEP_TEST   → 阶跃响应测试（给定电流阶跃，采集转速）
- *    MODE_RELAY_TEST  → 继电反馈自整定（Bang-Bang，找 Ku/Tu）
+ *    MODE_IDLE         → 空闲，电机不受控
+ *    MODE_STEP_TEST    → 空载阶跃响应测试（架车）
+ *    MODE_RELAY_TEST   → 空载继电反馈自整定（架车）
+ *    MODE_LOADED_STEP  → 带载阶跃响应测试（放在地上）
  *
- *  触发方式：遥控器右拨杆（s1）切到 上=阶跃测试，下=继电测试，中=空闲
+ *  触发方式：
+ *    右拨杆(s1): 上=空载阶跃, 下=空载继电, 中=空闲
+ *    左拨杆(s0): 上=带载阶跃,                 中=空闲
+ *
  *  数据输出：USART3，波特率 115200，文本格式
  * ============================================================ */
 
@@ -23,6 +27,11 @@
 #define STEP_DURATION_MS    1500        // 采集时长 ms
 #define STEP_MOTOR_INDEX    0           // 测试哪个电机 (0~3)
 
+/* 带载阶跃测试参数 */
+#define LOADED_CURRENT      3000        // 带载电流（比空载大，克服摩擦）
+#define LOADED_DURATION_MS  2000        // 采集时长 ms（带载响应慢，多采一点）
+#define LOADED_MOTOR_INDEX  0           // 测试哪个电机 (0~3)
+
 /* 继电测试参数 */
 #define RELAY_CURRENT       2500        // 继电输出电流幅值
 #define RELAY_HYSTERESIS    50          // 继电滞环宽度 (rpm)
@@ -30,7 +39,7 @@
 #define RELAY_MOTOR_INDEX   0           // 测试哪个电机 (0~3)
 
 /* 采集点数 */
-#define TUNER_MAX_POINTS    1500
+#define TUNER_MAX_POINTS    2000
 
 /* 状态枚举 */
 typedef enum
@@ -40,6 +49,8 @@ typedef enum
     TUNER_STEP_DONE,
     TUNER_RELAY_RUNNING,
     TUNER_RELAY_DONE,
+    TUNER_LOADED_RUNNING,
+    TUNER_LOADED_DONE,
 } tuner_state_e;
 
 /* 采集数据结构 */

@@ -160,7 +160,7 @@ int main(void)
                                              Chassis_get_motor_data(STEP_MOTOR_INDEX),
                                              Chassis_get_motor_pid(STEP_MOTOR_INDEX));
 
-        if (ts == TUNER_STEP_RUNNING || ts == TUNER_RELAY_RUNNING)
+        if (ts == TUNER_STEP_RUNNING || ts == TUNER_RELAY_RUNNING || ts == TUNER_LOADED_RUNNING)
         {
             /* 调参模式：单独发送测试电机的 CAN 指令，其他电机不动 */
             int16_t out = (int16_t)Chassis_get_motor_pid(STEP_MOTOR_INDEX)->out;
@@ -175,7 +175,7 @@ int main(void)
         }
 
         /* 测试完成时自动发送数据 */
-        if (ts == TUNER_STEP_DONE || ts == TUNER_RELAY_DONE)
+        if (ts == TUNER_STEP_DONE || ts == TUNER_RELAY_DONE || ts == TUNER_LOADED_DONE)
         {
             PID_Tuner_send_data(&tuner);
         }
