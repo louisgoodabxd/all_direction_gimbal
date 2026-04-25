@@ -1,0 +1,45 @@
+# Build outputs
+*.o
+*.d
+*.elf
+*.hex
+*.bin
+*.map
+*.axf
+*.htm
+*.lnp
+*.dep
+*.crf
+*.tra
+*.lst
+*.sct
+*.icf
+*.map
+*.iex
+*.lin
+
+# MDK-ARM build
+MDK-ARM/*.uvguix.*
+MDK-ARM/*.uvoptx
+MDK-ARM/RTE/
+MDK-ARM/*.bak
+MDK-ARM/*.dep
+
+# Eclipse / STM32CubeIDE
+Debug/
+Release/
+.settings/
+.cproject
+.project
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
