@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../bsp</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../bsp;../function</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1069,6 +1069,41 @@
               <FileName>ist8310driver_middleware.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\bsp\ist8310driver_middleware.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>function</GroupName>
+          <Files>
+            <File>
+              <FileName>ahrs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\function\ahrs.c</FilePath>
+            </File>
+            <File>
+              <FileName>ahrs.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\function\ahrs.h</FilePath>
+            </File>
+            <File>
+              <FileName>chassis_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\function\chassis_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>chassis_control.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\function\chassis_control.h</FilePath>
+            </File>
+            <File>
+              <FileName>gimbal_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\function\gimbal_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>gimbal_control.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\function\gimbal_control.h</FilePath>
             </File>
           </Files>
         </Group>
